@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Vente extends Model
+{
+    protected $fillable = [
+        'boisson_id',
+        'user_id',
+        'quantite',
+        'prix',
+    ];
+
+    protected $casts = [
+        'prix' => 'decimal:2',
+    ];
+
+    public function boisson()
+    {
+        return $this->belongsTo(Boisson::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}

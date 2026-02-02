@@ -1,0 +1,99 @@
+
+-- ROLES
+CREATE TABLE roles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom VARCHAR(50) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- USERS
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role_id INTEGER NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+-- TYPE_BOISSONS
+CREATE TABLE type_boissons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type VARCHAR(50) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- BOISSONS
+CREATE TABLE boissons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom VARCHAR(100) NOT NULL,
+    type_boisson_id INTEGER NOT NULL,
+    prix DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    image TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (type_boisson_id) REFERENCES type_boissons(id)
+);
+
+-- STOCKS
+CREATE TABLE stocks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    boisson_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    quantite_initiale INTEGER NOT NULL,
+    quantite_actuelle INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (boisson_id) REFERENCES boissons(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- VENTES
+CREATE TABLE ventes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    boisson_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    quantite INTEGER NOT NULL,
+    prix DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (boisson_id) REFERENCES boissons(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- CLOTURES
+CREATE TABLE clotures (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date_cloture DATE NOT NULL,
+    montant_total DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- CLOTURES_DETAILS
+CREATE TABLE clotures_details (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cloture_id INTEGER NOT NULL,
+    boisson_id INTEGER NOT NULL,
+    quantite_vendue INTEGER NOT NULL,
+    montant_vendu DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (cloture_id) REFERENCES clotures(id),
+    FOREIGN KEY (boisson_id) REFERENCES boissons(id)
+);
+
+-- HISTORIQUES
+CREATE TABLE historiques (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    type_action VARCHAR(50) NOT NULL,
+    details TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
