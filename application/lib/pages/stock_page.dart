@@ -328,48 +328,64 @@ class _StockPageState extends State<StockPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            heroTag: 'btn1',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AjouterBoissonPage(),
-                ),
-              );
-            },
-            backgroundColor: Colors.orange,
-            child: const Icon(Icons.local_bar),
+          Tooltip(
+            message: 'Ajouter une boisson',
+            waitDuration: const Duration(seconds: 1),
+            showDuration: const Duration(seconds: 5),
+            child: FloatingActionButton(
+              heroTag: 'btn1',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AjouterBoissonPage(),
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.local_bar),
+            ),
           ),
           const SizedBox(height: 12),
-          FloatingActionButton.extended(
-            heroTag: 'btn2',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AjouterStockPage(),
-                ),
-              );
-            },
-            backgroundColor: Colors.teal,
-            icon: const Icon(Icons.local_shipping_outlined),
-            label: const Text('Ajouter Stock'),
+          Tooltip(
+            message: 'Ajouter un stock',
+            waitDuration: const Duration(seconds: 1),
+            showDuration: const Duration(seconds: 5),
+            child: FloatingActionButton(
+              heroTag: 'btn2',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AjouterStockPage(),
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.local_shipping_outlined),
+            ),
           ),
-          SizedBox(height: 5),
-          FloatingActionButton.extended(
-            heroTag: 'btn3',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AjouterTypeBoissonPage(),
-                ),
-              );
-            },
-            backgroundColor: Colors.indigo,
-            icon: const Icon(Icons.local_drink),
-            label: const Text('Ajouter type boisson'),
+          SizedBox(height: 12),
+          Tooltip(
+            message: 'Ajouter un type de boisson',
+            waitDuration: const Duration(seconds: 1),
+            showDuration: const Duration(seconds: 5),
+            child: FloatingActionButton(
+              heroTag: 'btn3',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AjouterTypeBoissonPage(),
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.local_drink),
+            ),
           ),
         ],
       ),

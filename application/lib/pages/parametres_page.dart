@@ -160,31 +160,32 @@ class _SettingsPageState extends State<SettingsPage> {
                         const SizedBox(width: 16),
 
                         // Infos utilisateur
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Bonjour, ${userData?['name'] ?? 'Utilisateur'} 👋",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Bonjour, ${userData?['name'] ?? 'Utilisateur'} 👋",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                softWrap: true,
+                                maxLines: 2,
+                                overflow: TextOverflow.visible,
                               ),
-                              softWrap: true,
-                              maxLines: 2,
-                              overflow: TextOverflow.visible,
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "Rôle : ${userData?['role_name'] ?? 'Non défini'}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w500,
+                              SizedBox(height: 4),
+                              Text(
+                                "Rôle : ${userData?['role_name'] ?? 'Non défini'}",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-
                         const Spacer(),
 
                         // Bouton édition profil

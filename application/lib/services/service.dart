@@ -1,13 +1,30 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api'; //Android
+  //static const String baseUrl = 'http://10.0.2.2:8000/api'; //Android
   //static const String baseUrl = 'http://127.0.0.1:8000/api'; //Windows
-  static String? _token;
 
+  static String get baseUrl {
+    if (kIsWeb) {
+      //Web
+      return 'http://localhost:8000/api';
+    } else if (Platform.isAndroid) {
+      //Mobile Android
+      return 'http://192.168.1.83:8000/api';
+    } else if (Platform.isIOS) {
+      //Mobile Iphone
+      return 'http://127.0.0.1:8000/api';
+    }
+    // Default fallback for other platforms
+    return 'http://localhost:8000/api';
+  }
+
+  static String? _token;
   // Configuration du token
   static void setToken(String token) {
     _token = token;
