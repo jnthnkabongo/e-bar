@@ -15,13 +15,13 @@ class ApiService {
       return 'http://localhost:8000/api';
     } else if (Platform.isAndroid) {
       //Mobile Android
-      return 'http://192.168.1.83:8000/api';
+      return 'http://10.0.2.2:8000/api';
     } else if (Platform.isIOS) {
       //Mobile Iphone
       return 'http://127.0.0.1:8000/api';
     }
-    // Default fallback for other platforms
-    return 'http://localhost:8000/api';
+      // Default fallback for other platforms
+      return 'http://localhost:8000/api';
   }
 
   static String? _token;
