@@ -3,6 +3,7 @@ import 'package:application/pages/ajouter_type_boisson.dart';
 import 'package:application/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'ajouter_boisson.dart';
 
 class StockPage extends StatefulWidget {
@@ -324,68 +325,69 @@ class _StockPageState extends State<StockPage> {
                 ],
               ),
             ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        spacing: 12,
+        spaceBetweenChildren: 12,
+        childMargin: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+        animatedIconTheme: const IconThemeData(size: 28.0),
+        curve: Curves.bounceIn,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        elevation: 8.0,
+        shape: const CircleBorder(),
         children: [
-          Tooltip(
-            message: 'Ajouter une boisson',
-            waitDuration: const Duration(seconds: 1),
-            showDuration: const Duration(seconds: 5),
-            child: FloatingActionButton(
-              heroTag: 'btn1',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AjouterBoissonPage(),
-                  ),
-                );
-              },
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.local_bar),
-            ),
+          // Bouton Ajouter une boisson
+          SpeedDialChild(
+            child: const Icon(Icons.local_bar, color: Colors.white),
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            label: 'Ajouter une boisson',
+            labelStyle: const TextStyle(fontSize: 14.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AjouterBoissonPage(),
+                ),
+              );
+            },
           ),
-          const SizedBox(height: 12),
-          Tooltip(
-            message: 'Ajouter un stock',
-            waitDuration: const Duration(seconds: 1),
-            showDuration: const Duration(seconds: 5),
-            child: FloatingActionButton(
-              heroTag: 'btn2',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AjouterStockPage(),
-                  ),
-                );
-              },
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.local_shipping_outlined),
+          // Bouton Ajouter un stock
+          SpeedDialChild(
+            child: const Icon(
+              Icons.local_shipping_outlined,
+              color: Colors.white,
             ),
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            label: 'Ajouter un stock',
+            labelStyle: const TextStyle(fontSize: 14.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AjouterStockPage(),
+                ),
+              );
+            },
           ),
-          SizedBox(height: 12),
-          Tooltip(
-            message: 'Ajouter un type de boisson',
-            waitDuration: const Duration(seconds: 1),
-            showDuration: const Duration(seconds: 5),
-            child: FloatingActionButton(
-              heroTag: 'btn3',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AjouterTypeBoissonPage(),
-                  ),
-                );
-              },
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.local_drink),
-            ),
+          // Bouton Ajouter un type de boisson
+          SpeedDialChild(
+            child: const Icon(Icons.local_drink, color: Colors.white),
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
+            label: 'Ajouter un type de boisson',
+            labelStyle: const TextStyle(fontSize: 14.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AjouterTypeBoissonPage(),
+                ),
+              );
+            },
           ),
         ],
       ),

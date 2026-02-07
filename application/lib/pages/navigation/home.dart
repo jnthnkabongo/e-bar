@@ -221,7 +221,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       DashboardCard(
                         title: "Montant des ventes",
                         value:
-                            "${dashboardData?['stats']?['total_stock'] ?? '0'}",
+                            "${dashboardData?['stats']?['somme_vente_today'] ?? '0'} FC",
                         icon: Icons.money_sharp,
                         color: Colors.teal,
                       ),
@@ -306,22 +306,15 @@ class DashboardCard extends StatelessWidget {
         color: Colors.white,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(icon, color: color, size: 40),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          Icon(icon, color: color, size: 50),
+          const SizedBox(height: 16),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Text(title, style: const TextStyle(color: Colors.grey, fontSize: 16)),
         ],
       ),

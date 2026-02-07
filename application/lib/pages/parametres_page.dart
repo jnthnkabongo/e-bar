@@ -1,3 +1,4 @@
+import 'package:application/pages/apropos_page.dart';
 import 'package:application/pages/auth/signin_page.dart';
 import 'package:application/pages/historiques_page.dart';
 import 'package:application/pages/users_page.dart';
@@ -288,6 +289,18 @@ class _SettingsPageState extends State<SettingsPage> {
                         value: _notificationsEnabled,
                         onChanged: (value) {
                           setState(() => _notificationsEnabled = value);
+                        },
+                      ),
+                      SettingsActionTile(
+                        icon: Icons.people_alt_outlined,
+                        title: "Apropos",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AproposPage(),
+                            ),
+                          );
                         },
                       ),
                     ],

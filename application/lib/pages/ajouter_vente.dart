@@ -160,9 +160,9 @@ class _AjouterVentePageState extends State<AjouterVentePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Vente effectuée avec succès!\n'
-              'Montant total: ${result['montant_total']} \$\n'
-              'Stock restant: ${result['stock_restant']} unités',
+              'Vente effectuée avec succès!\n',
+              // 'Montant total: ${result['montant_total']} \$\n'
+              // 'Stock restant: ${result['stock_restant']} unités',
             ),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 4),

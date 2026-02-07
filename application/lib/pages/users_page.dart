@@ -298,6 +298,7 @@ class _UsersPageState extends State<UsersPage> {
         onPressed: _addUser,
         child: const Icon(Icons.add),
         backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
     );
   }

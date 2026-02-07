@@ -403,6 +403,7 @@ class _CloturePageState extends State<CloturePage> {
             },
             backgroundColor: Colors.blue,
             child: const Icon(Icons.receipt_long_outlined),
+            foregroundColor: Colors.white,
           ),
         ],
       ),

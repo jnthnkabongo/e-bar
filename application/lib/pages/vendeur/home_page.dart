@@ -247,6 +247,7 @@ class _DashboardPageState extends State<DashboardPageVendeur> {
         },
         child: const Icon(Icons.local_bar_rounded),
         backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
     );
   }

@@ -176,7 +176,7 @@ class _VentePageState extends State<VentePage> {
                                     ),
                                   ),
                                   Text(
-                                    "${getTotalClotures().toStringAsFixed(2)} \$",
+                                    "${getTotalClotures().toStringAsFixed(2)} FC",
                                     style: TextStyle(
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.bold,
@@ -247,7 +247,7 @@ class _VentePageState extends State<VentePage> {
                                       children: [
                                         SizedBox(height: 4.h),
                                         Text(
-                                          "Montant: ${cloture['montant_total'] ?? '0.00'} \$",
+                                          "Montant: ${cloture['montant_total'] ?? '0.00'} FC",
                                           style: TextStyle(
                                             fontSize: 12.sp,
                                             color: Colors.grey.shade600,
@@ -269,7 +269,7 @@ class _VentePageState extends State<VentePage> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          "${cloture['montant_total'] ?? '0.00'} \$",
+                                          "${cloture['montant_total'] ?? '0.00'} FC",
                                           style: TextStyle(
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.bold,
@@ -308,6 +308,7 @@ class _VentePageState extends State<VentePage> {
             },
             child: const Icon(Icons.add),
             backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
           ),
         ],
       ),

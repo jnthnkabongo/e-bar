@@ -16,6 +16,7 @@ use App\Models\Role;
 use App\Models\Cloture;
 use App\Models\ClotureDetail;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -99,10 +100,17 @@ class AuthController extends Controller
         }
 
         $sommeStock = Stock::where('quantite_actuelle', '>', 0)->sum('quantite_actuelle');
-        $sommeVente = Vente::sum('id');
+        $sommeVente = Vente::whereDate('created_at', Carbon::today())->sum('quantite');
         $sommeUtilisateur = User::count();
         $sommeVendu = Vente::where('quantite', '>', '0')->sum('quantite');
         
+        $sommeMontantVenteToday = Vente::with('boisson')
+            ->where('created_at', '>=', Carbon::today())
+            ->get()
+            ->sum(function ($vente) {
+                return $vente->quantite * $vente->boisson->prix;
+            });
+
         // Somme des prix des boissons dans quantite_initial
         $sommePrixQuantiteInitiale = Stock::with('boisson')
             ->where('quantite_initiale', '>', 0)
@@ -134,6 +142,7 @@ class AuthController extends Controller
                 'total_vendu' => $sommeVendu,
                 'somme_prix_quantite_initiale' => $sommePrixQuantiteInitiale,
                 'somme_prix_quantite_actuel' => $sommePrixQuantiteActuelle,
+                'somme_vente_today' => $sommeMontantVenteToday,
             ]
         ], 200);
     }
