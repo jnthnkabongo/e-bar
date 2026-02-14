@@ -296,9 +296,9 @@ class _UsersPageState extends State<UsersPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addUser,
-        child: const Icon(Icons.add),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 
 class ApiService {
   //static const String baseUrl = 'http://10.0.2.2:8000/api'; //Android
-  //static const String baseUrl = 'http://127.0.0.1:8000/api'; //Windows
+  //static const String baseUrl = 'http://192.168.123.34:8000/api'; //Windows
 
   static String get baseUrl {
     if (kIsWeb) {
@@ -20,8 +19,8 @@ class ApiService {
       //Mobile Iphone
       return 'http://127.0.0.1:8000/api';
     }
-      // Default fallback for other platforms
-      return 'http://localhost:8000/api';
+    // Default fallback for other platforms
+    return 'http://localhost:8000/api';
   }
 
   static String? _token;
@@ -419,6 +418,27 @@ class ApiService {
     }
   }
 
+  // Liste des clôtures
+  static Future<Map<String, dynamic>> getClotures() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/listeCloture'),
+        headers: _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'data': jsonDecode(response.body)};
+      } else {
+        return {
+          'success': false,
+          'message': 'Erreur de chargement des clôtures',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Erreur: $e'};
+    }
+  }
+
   // Liste des utilisateurs
   static Future<Map<String, dynamic>> getUsers() async {
     try {
@@ -433,27 +453,6 @@ class ApiService {
         return {
           'success': false,
           'message': 'Erreur de chargement des utilisateurs',
-        };
-      }
-    } catch (e) {
-      return {'success': false, 'message': 'Erreur: $e'};
-    }
-  }
-
-  //Liste des clotures
-  static Future<Map<String, dynamic>> getClotures() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/listeCloture'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        return {'success': true, 'data': jsonDecode(response.body)};
-      } else {
-        return {
-          'success': false,
-          'message': 'Erreur de chargement des clotures',
         };
       }
     } catch (e) {
@@ -494,6 +493,52 @@ class ApiService {
         return {'success': true, 'data': jsonDecode(response.body)};
       } else {
         return {'success': false, 'message': 'Erreur de chargement des rôles'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Erreur: $e'};
+    }
+  }
+
+  // Mettre à jour un stock
+  static Future<Map<String, dynamic>> updateStock(
+    int stockId,
+    int quantite,
+  ) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/updateStock/$stockId'),
+        headers: _getHeaders(),
+        body: jsonEncode({'quantite_actuelle': quantite}),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'data': jsonDecode(response.body)};
+      } else {
+        return {
+          'success': false,
+          'message': 'Erreur lors de la mise à jour du stock',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Erreur: $e'};
+    }
+  }
+
+  // Supprimer un stock
+  static Future<Map<String, dynamic>> deleteStock(int stockId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/deleteStock/$stockId'),
+        headers: _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'data': jsonDecode(response.body)};
+      } else {
+        return {
+          'success': false,
+          'message': 'Erreur lors de la suppression du stock',
+        };
       }
     } catch (e) {
       return {'success': false, 'message': 'Erreur: $e'};

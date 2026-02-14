@@ -12,7 +12,6 @@ class _AjouterTypeBoissonPageState extends State<AjouterTypeBoissonPage> {
   final _formKey = GlobalKey<FormState>();
   final _nomController = TextEditingController();
   bool _isLoading = false;
-  bool isLoading = true;
   Map<String, dynamic>? userData;
 
   @override
@@ -35,14 +34,15 @@ class _AjouterTypeBoissonPageState extends State<AjouterTypeBoissonPage> {
         userData = profileResult['success']
             ? profileResult['data']['user']
             : null;
-        isLoading = false;
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
+
   // Fonction pour obtenir l'initiale de l'utilisateur
   String _getUserInitial() {
     if (userData != null && userData!['name'] != null) {

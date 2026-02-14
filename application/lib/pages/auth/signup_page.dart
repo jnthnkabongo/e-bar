@@ -170,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       // Rôle
                       DropdownButtonFormField<String>(
-                        value: _role,
+                        initialValue: _role,
                         decoration: InputDecoration(
                           labelText: "Rôle",
                           prefixIcon: const Icon(Icons.security),

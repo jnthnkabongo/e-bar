@@ -84,7 +84,7 @@ class _StockPageState extends State<StockPage> {
     return 'Utilisateur';
   }
 
-  void _showActions(Map<String, dynamic> boisson) {
+  void _showActions(Map<String, dynamic> stock) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -98,6 +98,7 @@ class _StockPageState extends State<StockPage> {
               title: const Text('Modifier quantité'),
               onTap: () {
                 Navigator.pop(context);
+                _showEditQuantityDialog(stock);
               },
             ),
             ListTile(
@@ -105,12 +106,160 @@ class _StockPageState extends State<StockPage> {
               title: const Text('Supprimer'),
               onTap: () {
                 Navigator.pop(context);
+                _showDeleteConfirmationDialog(stock);
               },
             ),
           ],
         );
       },
     );
+  }
+
+  void _showEditQuantityDialog(Map<String, dynamic> stock) {
+    final TextEditingController quantityController = TextEditingController();
+    var boisson = stock['boisson'];
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Modifier la quantité'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Boisson: ${boisson['nom'] ?? 'Nom inconnu'}'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: quantityController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Nouvelle quantité',
+                  hintText: 'Entrez la nouvelle quantité',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newQuantity = int.tryParse(quantityController.text);
+                if (newQuantity != null && newQuantity >= 0) {
+                  _updateStockQuantity(stock['id'], newQuantity);
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Veuillez entrer une quantité valide'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Modifier'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(Map<String, dynamic> stock) {
+    var boisson = stock['boisson'];
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirmer la suppression'),
+          content: Text(
+            'Êtes-vous sûr de vouloir supprimer le stock de "${boisson['nom'] ?? 'cette boisson'}" ?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _deleteStock(stock['id']);
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Supprimer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _updateStockQuantity(int stockId, int newQuantity) async {
+    try {
+      final result = await ApiService.updateStock(stockId, newQuantity);
+
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Quantité mise à jour avec succès'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Recharger les données
+        _loadStocks();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erreur lors de la mise à jour'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erreur lors de la mise à jour'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteStock(int stockId) async {
+    try {
+      final result = await ApiService.deleteStock(stockId);
+
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Stock supprimé avec succès'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Recharger les données
+        _loadStocks();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Erreur lors de la suppression'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur lors de la suppression: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Map<String, int> getTotals() {
@@ -213,7 +362,7 @@ class _StockPageState extends State<StockPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Total Stock: $sommeStock unités",
+                          "Total Stock: $sommeStock Bouteilles",
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
@@ -222,32 +371,30 @@ class _StockPageState extends State<StockPage> {
                         ),
                         SizedBox(height: 10.h),
                         // Totaux par type
-                        ...sommeParType
-                            .map(
-                              (typeData) => Padding(
-                                padding: EdgeInsets.only(top: 5.h),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      getIcon(typeData['type_boisson'] ?? ''),
-                                      size: 16.sp,
-                                      color: getColor(
-                                        typeData['type_boisson'] ?? '',
-                                      ),
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    Text(
-                                      "${typeData['type_boisson'] ?? 'Non défini'}: ${typeData['quantite_totale'] ?? 0} unités",
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Colors.grey.shade700,
-                                      ),
-                                    ),
-                                  ],
+                        ...sommeParType.map(
+                          (typeData) => Padding(
+                            padding: EdgeInsets.only(top: 5.h),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  getIcon(typeData['type_boisson'] ?? ''),
+                                  size: 16.sp,
+                                  color: getColor(
+                                    typeData['type_boisson'] ?? '',
+                                  ),
                                 ),
-                              ),
-                            )
-                            .toList(),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  "${typeData['type_boisson'] ?? 'Non défini'}: ${typeData['quantite_totale'] ?? 0} Bouteilles",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

@@ -182,15 +182,23 @@ class _DashboardPageState extends State<DashboardPageVendeur> {
                         value:
                             "${dashboardData?['stats']?['total_vendu'] ?? '0'}",
                         icon: Icons.shopping_cart,
-                        color: Colors.green,
+                        color: Colors.indigo,
                       ),
 
                       DashboardCard(
-                        title: "Total ventes",
+                        title: "Total ventes par bouteille",
                         value:
                             "${dashboardData?['stats']?['total_vente'] ?? '0'}",
                         icon: Icons.trending_up_outlined,
                         color: Colors.red,
+                      ),
+
+                      DashboardCard(
+                        title: "Montant vendu",
+                        value:
+                            "${dashboardData?['stats']?['somme_vente_today_user'] ?? '0'} FC",
+                        icon: Icons.money,
+                        color: Colors.teal,
                       ),
                     ],
                   ),
@@ -245,9 +253,9 @@ class _DashboardPageState extends State<DashboardPageVendeur> {
             MaterialPageRoute(builder: (context) => const AjouterVentePage()),
           );
         },
-        child: const Icon(Icons.local_bar_rounded),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        child: const Icon(Icons.local_bar_rounded),
       ),
     );
   }
@@ -284,22 +292,15 @@ class DashboardCard extends StatelessWidget {
         color: Colors.white,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(icon, color: color, size: 40),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          Icon(icon, color: color, size: 40),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 20),
+
+          const SizedBox(height: 12),
           Text(title, style: const TextStyle(color: Colors.grey, fontSize: 16)),
         ],
       ),

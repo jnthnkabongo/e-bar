@@ -228,14 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     const Text("Pas encore de compte ? "),
                     TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const RegisterPage(),
-                          ),
-                        );
-                      },
+                      onPressed: () {},
                       child: const Text(
                         "Créer un compte",
                         style: TextStyle(fontWeight: FontWeight.bold),

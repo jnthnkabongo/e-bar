@@ -19,7 +19,6 @@ class _AjouterBoissonPageState extends State<AjouterBoissonPage> {
   List<dynamic> _typeBoissons = [];
   bool _isLoading = false;
   bool _isLoadingTypes = true;
-  bool isLoading = true;
   Map<String, dynamic>? userData;
 
   @override
@@ -68,11 +67,11 @@ class _AjouterBoissonPageState extends State<AjouterBoissonPage> {
         userData = profileResult['success']
             ? profileResult['data']['user']
             : null;
-        isLoading = false;
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
@@ -216,7 +215,7 @@ class _AjouterBoissonPageState extends State<AjouterBoissonPage> {
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.category),
                         ),
-                        value: _selectedTypeBoissonId,
+                        initialValue: _selectedTypeBoissonId,
                         items: _typeBoissons.map((type) {
                           return DropdownMenuItem<int>(
                             value: type['id'],
@@ -241,7 +240,7 @@ class _AjouterBoissonPageState extends State<AjouterBoissonPage> {
                   decoration: const InputDecoration(
                     labelText: 'Prix',
                     border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.euro),
+                    prefixIcon: Icon(Icons.money),
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {

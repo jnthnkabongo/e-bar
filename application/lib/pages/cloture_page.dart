@@ -1,8 +1,7 @@
-import 'package:application/pages/cloture_management_page.dart';
+import 'package:application/pages/compte_page_new.dart';
 import 'package:application/services/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 class CloturePage extends StatefulWidget {
   const CloturePage({super.key});
@@ -63,14 +62,28 @@ class _CloturePageState extends State<CloturePage> {
   Future<void> _loadVentes() async {
     try {
       final result = await ApiService.getVentes();
+      print('DEBUG: Result from API: $result'); // Debug
       if (result['success']) {
         setState(() {
-          ventesParDate = result['data']['ventes_par_date'] ?? {};
+          // Accéder aux données selon la structure réelle
+          var data = result['data'];
+          if (data is Map && data.containsKey('data')) {
+            ventesParDate = data['data']['ventes_par_date'] ?? {};
+          } else {
+            ventesParDate = data['ventes_par_date'] ?? {};
+          }
+          print('DEBUG: ventesParDate: $ventesParDate'); // Debug
           _calculateChiffreVendu();
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          ventesParDate = {};
           isLoading = false;
         });
       }
     } catch (e) {
+      print('DEBUG: Error loading ventes: $e'); // Debug
       setState(() {
         isLoading = false;
       });
@@ -80,8 +93,10 @@ class _CloturePageState extends State<CloturePage> {
   void _calculateChiffreVendu() {
     double total = 0.0;
     ventesParDate.forEach((date, ventes) {
-      for (var vente in ventes) {
-        total += double.tryParse(vente['prix'].toString()) ?? 0.0;
+      if (ventes is List) {
+        for (var vente in ventes) {
+          total += double.tryParse(vente['prix'].toString()) ?? 0.0;
+        }
       }
     });
     chiffreVendu = total;
@@ -108,10 +123,12 @@ class _CloturePageState extends State<CloturePage> {
   Map<String, int> getTotals() {
     Map<String, int> totals = {};
     ventesParDate.forEach((date, ventes) {
-      for (var vente in ventes) {
-        // Pour l'instant, nous n'avons pas le type dans l'API, nous utiliserons un placeholder
-        String type = "Non défini";
-        totals[type] = (totals[type] ?? 0) + (vente['quantite'] as int);
+      if (ventes is List) {
+        for (var vente in ventes) {
+          // Pour l'instant, nous n'avons pas le type dans l'API, nous utiliserons un placeholder
+          String type = "Non défini";
+          totals[type] = (totals[type] ?? 0) + (vente['quantite'] as int);
+        }
       }
     });
     return totals;
@@ -119,7 +136,10 @@ class _CloturePageState extends State<CloturePage> {
 
   Map<String, List<Map<String, dynamic>>> groupByDate() {
     return ventesParDate.map(
-      (key, value) => MapEntry(key, List<Map<String, dynamic>>.from(value)),
+      (key, value) => MapEntry(
+        key,
+        List<Map<String, dynamic>>.from(value is List ? value : []),
+      ),
     );
   }
 
@@ -147,34 +167,6 @@ class _CloturePageState extends State<CloturePage> {
       default:
         return Icons.local_bar;
     }
-  }
-
-  void _lancerCloture() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Confirmer la clôture"),
-        content: Text(
-          "Voulez-vous vraiment clôturer la journée du ${DateFormat('yyyy-MM-dd').format(DateTime.now())}?",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Annuler"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Clôture effectuée !")),
-              );
-              // TODO: logique backend pour clôturer
-            },
-            child: const Text("Confirmer"),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -353,34 +345,52 @@ class _CloturePageState extends State<CloturePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "Prix: ${double.tryParse(vente['prix'].toString())?.toStringAsFixed(2) ?? '0.00'} FC",
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: Colors.grey.shade600,
+                                      RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  "Prix: ${double.tryParse(vente['prix'].toString())?.toStringAsFixed(2) ?? '0.00'} FC | ",
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  "Total: ${((vente['quantite'] ?? 0) * double.tryParse(vente['prix'].toString()) ?? 0.0).toStringAsFixed(2)} FC",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.green.shade700,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        "Total: ${((vente['quantite'] ?? 0) * double.tryParse(vente['prix'].toString()) ?? 0.0).toStringAsFixed(2)} FC",
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.green.shade700,
-                                        ),
-                                      ),
-                                      if (vente['user']?['name'] != null)
+                                      // Afficher le nom du vendeur si disponible
+                                      if (vente['user'] != null &&
+                                          vente['user']['nom'] != null)
                                         Text(
-                                          "Vendeur: ${vente['user']['name']}",
+                                          "Vendeur: ${vente['user']['nom']}",
                                           style: TextStyle(
                                             fontSize: 11.sp,
                                             color: Colors.grey.shade500,
+                                          ),
+                                        )
+                                      else
+                                        Text(
+                                          "Vendeur: Non spécifié",
+                                          style: TextStyle(
+                                            fontSize: 11.sp,
+                                            color: Colors.grey.shade400,
+                                            fontStyle: FontStyle.italic,
                                           ),
                                         ),
                                     ],
                                   ),
                                 ),
                               );
-                            }).toList(),
+                            }),
                             SizedBox(height: 12.h),
                           ],
                         );
@@ -398,12 +408,12 @@ class _CloturePageState extends State<CloturePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AjouterCloture()),
+                MaterialPageRoute(builder: (context) => const ComptePage()),
               );
             },
             backgroundColor: Colors.blue,
-            child: const Icon(Icons.receipt_long_outlined),
             foregroundColor: Colors.white,
+            child: const Icon(Icons.add),
           ),
         ],
       ),

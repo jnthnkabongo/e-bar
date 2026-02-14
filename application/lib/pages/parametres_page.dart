@@ -1,5 +1,7 @@
 import 'package:application/pages/apropos_page.dart';
 import 'package:application/pages/auth/signin_page.dart';
+import 'package:application/pages/conditions_page.dart';
+import 'package:application/pages/politique_page.dart';
 import 'package:application/pages/historiques_page.dart';
 import 'package:application/pages/users_page.dart';
 import 'package:application/services/service.dart';
@@ -299,6 +301,36 @@ class _SettingsPageState extends State<SettingsPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => const AproposPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  SettingsSection(
+                    title: "Documentations",
+                    children: [
+                      SettingsActionTile(
+                        icon: Icons.info,
+                        title: "Conditions Générales d'Utilisation",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ConditionsPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      SettingsActionTile(
+                        icon: Icons.privacy_tip,
+                        title: "Politique de Confidentialité",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PolitiquePage(),
                             ),
                           );
                         },

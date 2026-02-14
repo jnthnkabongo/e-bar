@@ -12,9 +12,9 @@ class AproposPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<AproposPage> {
-  bool _biometricEnabled = false;
-  bool _notificationsEnabled = true;
-  String _language = "Français";
+  final bool _biometricEnabled = false;
+  final bool _notificationsEnabled = true;
+  final String _language = "Français";
   Map<String, dynamic>? userData;
   Map<String, dynamic>? dashboardData;
   bool isLoading = true;

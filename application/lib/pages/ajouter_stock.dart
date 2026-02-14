@@ -16,7 +16,6 @@ class _AjouterStockPageState extends State<AjouterStockPage> {
   List<dynamic> _boissons = [];
   bool _isLoading = false;
   bool _isLoadingBoissons = true;
-  bool isLoading = true;
   Map<String, dynamic>? userData;
 
   @override
@@ -62,11 +61,11 @@ class _AjouterStockPageState extends State<AjouterStockPage> {
         userData = profileResult['success']
             ? profileResult['data']['user']
             : null;
-        isLoading = false;
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
@@ -189,7 +188,7 @@ class _AjouterStockPageState extends State<AjouterStockPage> {
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.local_drink),
                       ),
-                      value: _selectedBoissonId,
+                      initialValue: _selectedBoissonId,
                       items: _boissons.map((boisson) {
                         return DropdownMenuItem<int>(
                           value: boisson['id'],

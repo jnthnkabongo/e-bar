@@ -306,9 +306,9 @@ class _VentePageState extends State<VentePage> {
                 MaterialPageRoute(builder: (context) => const AjouterCloture()),
               );
             },
-            child: const Icon(Icons.add),
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
+            child: const Icon(Icons.add),
           ),
         ],
       ),

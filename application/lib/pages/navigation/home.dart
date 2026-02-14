@@ -11,6 +11,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   Map<String, dynamic>? userData;
   Map<String, dynamic>? dashboardData;
+  List<dynamic>? _stockDetails;
   bool isLoading = true;
 
   @override
@@ -23,6 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
     try {
       final profileResult = await ApiService.getProfile();
       final dashboardResult = await ApiService.getDashboard();
+      final stocksResult = await ApiService.getStocks();
 
       setState(() {
         userData = profileResult['success']
@@ -31,6 +33,9 @@ class _DashboardPageState extends State<DashboardPage> {
         dashboardData = dashboardResult['success']
             ? dashboardResult['data']
             : null;
+        _stockDetails = stocksResult['success']
+            ? stocksResult['data']['stocks']
+            : [];
         isLoading = false;
       });
     } catch (e) {
@@ -57,6 +62,51 @@ class _DashboardPageState extends State<DashboardPage> {
       return userData!['name'].toString();
     }
     return 'Utilisateur';
+  }
+
+  // Fonction pour regrouper les stocks par type de boisson
+  Map<String, int> _getStockByType() {
+    Map<String, int> stockByType = {};
+
+    if (_stockDetails != null) {
+      for (var stock in _stockDetails!) {
+        String typeBoisson =
+            stock['boisson']['type_boisson']['type'] ?? 'Non défini';
+        int quantite = stock['quantite'] ?? stock['quantite_actuelle'] ?? 0;
+
+        if (stockByType.containsKey(typeBoisson)) {
+          stockByType[typeBoisson] = stockByType[typeBoisson]! + quantite;
+        } else {
+          stockByType[typeBoisson] = quantite;
+        }
+      }
+    }
+
+    return stockByType;
+  }
+
+  // Fonction pour afficher les stocks par type depuis le dashboard
+  String _getStocksParTypeDisplay() {
+    if (dashboardData?['stats']?['stocks_par_type'] == null) {
+      return '0 types';
+    }
+
+    List<dynamic> stocksParType = dashboardData!['stats']['stocks_par_type'];
+    if (stocksParType.isEmpty) {
+      return '0 types';
+    }
+
+    // Créer une liste des types avec leurs quantités
+    List<String> typesAvecQuantites = [];
+
+    for (var stock in stocksParType) {
+      String type = (stock['type_boisson'] ?? 'N/A').toString().toUpperCase();
+      int quantite = stock['quantite_totale'] ?? 0;
+      typesAvecQuantites.add('$type: $quantite');
+    }
+
+    // Joindre tous les types avec des virgules
+    return typesAvecQuantites.join(', ');
   }
 
   @override
@@ -183,13 +233,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         icon: Icons.remove,
                         color: Colors.redAccent,
                       ),
-                      // DashboardCard(
-                      //   title: "Montant des ventes",
-                      //   value:
-                      //       "${dashboardData?['stats']?['total_stock'] ?? '0'}",
-                      //   icon: Icons.money_sharp,
-                      //   color: Colors.green,
-                      // ),
+
                       DashboardCard(
                         title: "Stock total actuel",
                         value:
@@ -212,7 +256,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         color: Colors.blue,
                       ),
                       DashboardCard(
-                        title: "Total ventes",
+                        title: "Total ventes par bouteille",
                         value:
                             "${dashboardData?['stats']?['total_vente'] ?? '0'}",
                         icon: Icons.trending_up_outlined,
@@ -225,7 +269,91 @@ class _DashboardPageState extends State<DashboardPage> {
                         icon: Icons.money_sharp,
                         color: Colors.teal,
                       ),
+                      // DashboardCard(
+                      //   title: "Quantité boisson par type",
+                      //   value: _getStocksParTypeDisplay(),
+                      //   icon: Icons.collections_bookmark_outlined,
+                      //   color: Colors.amberAccent,
+                      // ),
                     ],
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // Section Stock par type de boissons
+                  const Text(
+                    "Stock par type de boissons",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.blue.shade100),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.withOpacity(0.08),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (dashboardData?['stats']?['stocks_par_type'] != null)
+                          ...dashboardData!['stats']['stocks_par_type'].map<
+                            Widget
+                          >((stock) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    (stock['type_boisson'] ?? 'N/A')
+                                        .toString()
+                                        .toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      "${stock['quantite_totale'] ?? 0} Bouteilles",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList()
+                        else
+                          const Center(
+                            child: Text(
+                              "Aucune donnée de stock disponible",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 30),
