@@ -111,6 +111,14 @@ class AuthController extends Controller
                 return $vente->quantite * $vente->boisson->prix;
             });
 
+        $sommeMontantVenteTodayUser = Vente::with('boisson')
+            ->where('user_id', $user->id)
+            ->where('created_at', '>=', Carbon::today())
+            ->get()
+            ->sum(function ($vente) {
+                return $vente->quantite * $vente->boisson->prix;
+            });
+
         // Somme des prix des boissons dans quantite_initial
         $sommePrixQuantiteInitiale = Stock::with('boisson')
             ->where('quantite_initiale', '>', 0)
@@ -126,6 +134,26 @@ class AuthController extends Controller
             ->sum(function ($stock) {
                 return $stock->quantite_actuelle * $stock->boisson->prix;
         });
+
+        // Stocks par type de boissons
+        $stocksParType = TypeBoisson::with(['boissons.stocks'])
+            ->whereHas('boissons.stocks')
+            ->get()
+            ->map(function ($type) {
+                $quantiteTotale = $type->boissons
+                    ->flatMap->stocks
+                    ->sum('quantite_actuelle');
+                
+                return [
+                    'type_boisson_id' => $type->id,
+                    'type_boisson' => $type->type,
+                    'quantite_totale' => $quantiteTotale,
+                ];
+            })
+            ->filter(function ($type) {
+                return $type['quantite_totale'] > 0;
+            })
+            ->values();
 
         return response()->json([
             'user' => [
@@ -143,6 +171,8 @@ class AuthController extends Controller
                 'somme_prix_quantite_initiale' => $sommePrixQuantiteInitiale,
                 'somme_prix_quantite_actuel' => $sommePrixQuantiteActuelle,
                 'somme_vente_today' => $sommeMontantVenteToday,
+                'somme_vente_today_user' => $sommeMontantVenteTodayUser,
+                'stocks_par_type' => $stocksParType,
             ]
         ], 200);
     }
@@ -464,7 +494,10 @@ class AuthController extends Controller
         });
 
         return response()->json([
-            'ventes_par_date' => $ventesParDate,
+            'success' => true,
+            'data' => [
+                'ventes_par_date' => $ventesParDate,
+            ]
         ], 200);
     }
 
@@ -677,6 +710,72 @@ class AuthController extends Controller
             'total' => $boissons->count()
         ], 200);
     }
+
+    // Mettre à jour un stock
+    public function updateStock(Request $request, $stockId)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Non authentifié'
+            ], 401);
+        }
+
+        $request->validate([
+            'quantite_actuelle' => 'required|integer|min:0',
+        ]);
+
+        try {
+            $stock = Stock::findOrFail($stockId);
+            $stock->quantite_actuelle = $request->quantite_actuelle;
+            $stock->save();
+
+            $this->ajouterHistorique('Mise à jour Stock', "Mise à jour du stock ID: {$stockId} - Nouvelle quantité: {$request->quantite_actuelle}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stock mis à jour avec succès',
+                'data' => $stock->load('boisson.typeBoisson')
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour du stock: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Supprimer un stock
+    public function deleteStock(Request $request, $stockId)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Non authentifié'
+            ], 401);
+        }
+
+        try {
+            $stock = Stock::findOrFail($stockId);
+            $stockNom = $stock->boisson->nom ?? 'cette boisson';
+            $stock->delete();
+
+            $this->ajouterHistorique('Suppression Stock', "Suppression du stock ID: {$stockId} - Boisson: {$stockNom}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stock supprimé avec succès'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression du stock: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function logout(Request $request)
     {
         $user = $request->user();

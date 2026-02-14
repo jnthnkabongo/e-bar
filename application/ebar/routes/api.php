@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
     Route::get('/listeStock', [AuthController::class, 'listeStock']);
+    Route::get('/stockParTypeBoisson', [AuthController::class, 'stockParTypeBoisson']);
     Route::get('/listeVente', [AuthController::class, 'listeVente']);
     Route::get('/historiques', [AuthController::class, 'historiques']);
     Route::get('/listeBoisson', [AuthController::class, 'listeBoisson']);
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ajouterRole', [AuthController::class, 'ajouterRole']);
     Route::post('/ajouterCloture', [AuthController::class, 'ajouterCloture']);
     Route::post('/ajouterVente', [AuthController::class, 'ajouterVente']);
+    Route::put('/updateStock/{stockId}', [AuthController::class, 'updateStock']);
+    Route::delete('/deleteStock/{stockId}', [AuthController::class, 'deleteStock']);
     // (optionnel) logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });
