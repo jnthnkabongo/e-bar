@@ -443,7 +443,7 @@ class DashboardCard extends StatelessWidget {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          Text(title, style: const TextStyle(color: Colors.grey, fontSize: 16)),
+          Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
         ],
       ),
     );

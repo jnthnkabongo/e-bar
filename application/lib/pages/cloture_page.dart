@@ -177,7 +177,7 @@ class _CloturePageState extends State<CloturePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Ventes de la journée",
+          "Ventes",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -264,7 +264,7 @@ class _CloturePageState extends State<CloturePage> {
                                   ),
                                   SizedBox(width: 6.w),
                                   Text(
-                                    "${entry.key} : ${entry.value} pcs",
+                                    "${entry.key} : ${entry.value} Bouteilles",
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w600,
