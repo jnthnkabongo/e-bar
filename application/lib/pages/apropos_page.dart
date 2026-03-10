@@ -1,6 +1,4 @@
 import 'package:application/pages/auth/signin_page.dart';
-import 'package:application/pages/historiques_page.dart';
-import 'package:application/pages/users_page.dart';
 import 'package:application/services/service.dart';
 import 'package:flutter/material.dart';
 

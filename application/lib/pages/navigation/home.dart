@@ -242,7 +242,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         color: Colors.orange,
                       ),
                       DashboardCard(
-                        title: "Quantité vendue aujourd'hui",
+                        title: "Total quantité vendue",
                         value:
                             "${dashboardData?['stats']?['total_vendu'] ?? '0'}",
                         icon: Icons.shopping_cart,
@@ -440,7 +440,7 @@ class DashboardCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),

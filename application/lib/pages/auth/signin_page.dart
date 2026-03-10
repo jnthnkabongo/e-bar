@@ -1,4 +1,3 @@
-import 'package:application/pages/auth/signup_page.dart';
 import 'package:application/pages/gerant/main_page.dart';
 import 'package:application/pages/navigation/main_page.dart';
 import 'package:application/pages/vendeur/main_page.dart';
@@ -223,20 +222,19 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 24),
 
                 // 🔗 LIEN CRÉATION DE COMPTE
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Pas encore de compte ? "),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Créer un compte",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     const Text("Pas encore de compte ? "),
+                //     TextButton(
+                //       onPressed: () {},
+                //       child: const Text(
+                //         "Créer un compte",
+                //         style: TextStyle(fontWeight: FontWeight.bold),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(height: 16),
 
                 Text(

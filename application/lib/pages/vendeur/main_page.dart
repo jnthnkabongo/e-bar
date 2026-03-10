@@ -78,7 +78,7 @@ class _MainPageState extends State<MainPageVendeur> {
                 ),
                 _buildNavItem(
                   icon: Icons.settings_outlined,
-                  selectedIcon: Icons.person,
+                  selectedIcon: Icons.settings,
                   label: 'Paramètres',
                   index: 3,
                 ),

@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 
 class ApiService {
   //static const String baseUrl = 'http://10.0.2.2:8000/api'; //Android
-  //static const String baseUrl = 'http://192.168.123.34:8000/api'; //Windows
+  //static const String baseUrl = 'http://172.20.10.2:8000/api'; //Windows
 
   static String get baseUrl {
     if (kIsWeb) {

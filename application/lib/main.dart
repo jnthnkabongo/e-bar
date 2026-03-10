@@ -1,4 +1,4 @@
-import 'package:application/pages/auth/signin_page.dart';
+import 'package:application/pages/auth/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, // optionnel pour le design moderne
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: const OnboardingPage(),
     );
   }
 }

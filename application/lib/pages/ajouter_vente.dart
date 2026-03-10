@@ -345,7 +345,7 @@ class _AjouterVentePageState extends State<AjouterVentePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Articles de la vente',
+                            'Vente de boisson',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,

@@ -178,7 +178,7 @@ class _DashboardPageState extends State<DashboardPageVendeur> {
                         color: Colors.orange,
                       ),
                       DashboardCard(
-                        title: "Quantité vendue aujourd'hui",
+                        title: "Total quantité vendue",
                         value:
                             "${dashboardData?['stats']?['total_vendu'] ?? '0'}",
                         icon: Icons.shopping_cart,

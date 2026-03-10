@@ -49,9 +49,9 @@ class AuthController extends Controller
             $user->load('role'); // Charger la relation après auth
             
             // Debug pour voir les données
-            \Log::info('User ID: ' . $user->id);
-            \Log::info('Role ID: ' . $user->role_id);
-            \Log::info('Role Name: ' . optional($user->role)->nom);
+            //\Log::info('User ID: ' . $user->id);
+            //\Log::info('Role ID: ' . $user->role_id);
+            //\Log::info('Role Name: ' . optional($user->role)->nom);
 
             //Enregistrement historiques
             $this->ajouterHistorique('Connexion', 'Utilisateur connecté avec succès');
